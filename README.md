@@ -106,3 +106,49 @@ The timeout defaults can be overridden for a controlled canary with `SITES_INSTA
 
 - [vinext Documentation](https://github.com/cloudflare/vinext)
 - [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+
+## Amigo Cargo — Calculadora, cuentas y panel admin
+
+Esta rama añade autenticación de clientes, calculadora de envíos y panel de
+administración, conectados a Supabase.
+
+### 1. Variables de entorno
+
+Copia `.env.example` a `.env.local` y completa:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
+```
+
+En Vercel: Project Settings → Environment Variables → agrega las mismas dos
+variables (Production y Preview).
+
+### 2. Esquema de base de datos
+
+En el dashboard de Supabase → SQL Editor, ejecuta el contenido de
+`supabase/migrations/0001_init.sql`. Crea:
+
+- `profiles` (perfil + número de casillero automático + rol client/admin)
+- `shipments` y `shipment_events` (envíos y su línea de tiempo)
+- `tariffs` (tarifas editables desde `/admin/tarifas`, con valores iniciales
+  tomados del brochure)
+- Políticas RLS: los clientes solo ven sus propios datos; el admin ve y
+  gestiona todo. Las tarifas son de lectura pública (para la calculadora).
+
+No se usa la `service_role key` — todo opera respetando RLS con la sesión del
+usuario.
+
+### 3. Crear el primer administrador
+
+1. Regístrate normalmente desde `/registro`.
+2. En Supabase → Table Editor → `profiles`, cambia tu fila: `role` → `admin`.
+3. Refresca `/admin` en la web.
+
+### 4. Rutas nuevas
+
+- `/calculadora` — calculadora pública de envío marítimo (peso/volumen).
+- `/login`, `/registro` — autenticación de clientes.
+- `/mi-cuenta` — casillero y línea de tiempo de envíos del cliente.
+- `/admin`, `/admin/tarifas`, `/admin/envios`, `/admin/usuarios` — panel
+  interno (requiere rol `admin`).

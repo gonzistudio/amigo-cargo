@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState } from "react";
-import Link from "next/link";
 import { signIn, type AuthState } from "@/app/actions/auth";
 
 const initialState: AuthState = { error: null };
@@ -24,9 +23,6 @@ export default function LoginForm({ next }: { next: string }) {
       <button className="btn" type="submit" disabled={pending}>
         {pending ? "Entrando…" : "Iniciar sesión"}
       </button>
-      <p style={{ fontSize: 13, marginTop: 18, color: "var(--muted)" }}>
-        ¿No tienes cuenta? <Link href="/registro" style={{ color: "var(--blue)", fontWeight: 700 }}>Regístrate</Link>
-      </p>
     </form>
   );
 }

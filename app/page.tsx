@@ -1,3 +1,5 @@
+import Calculator from "@/components/Calculator";
+
 const whatsappLink = "https://wa.me/?text=Hola%20Amigo%20Cargo%2C%20quiero%20solicitar%20una%20cotizaci%C3%B3n%20para%20importar%20desde%20China.";
 
 const services = [
@@ -26,7 +28,7 @@ export default function Home() {
   return <main>
     <header className="site-header">
       <a className="brand" href="#inicio" aria-label="Amigo Cargo, inicio"><span className="brand-mark">AC</span><span>AMIGO CARGO</span></a>
-      <nav aria-label="Navegación principal"><a href="#servicios">Servicios</a><a href="#proceso">Cómo funciona</a><a href="#nosotros">Nosotros</a><a href="/calculadora">Calculadora</a><a href="/login">Mi cuenta</a></nav>
+      <nav aria-label="Navegación principal"><a href="#servicios">Servicios</a><a href="#calculadora">Calculadora</a><a href="#proceso">Cómo funciona</a><a href="#nosotros">Nosotros</a></nav>
       <a className="button button-small" href={whatsappLink} target="_blank" rel="noreferrer">Cotizar envío <span>↗</span></a>
     </header>
     <section className="hero" id="inicio">
@@ -44,6 +46,10 @@ export default function Home() {
       <div className="section-heading"><div><p className="eyebrow"><span /> Lo esencial</p><h2>Todo lo que necesitas para traer tu carga.</h2></div><p>Centralizamos las etapas clave de tu importación para darte más orden, control y comunicación.</p></div>
       <div className="service-grid">{services.map(([number,title,content])=><article className="service-card" key={title}><span>{number}</span><h3>{title}</h3><p>{content}</p><a href={whatsappLink} target="_blank" rel="noreferrer">Consultar <b>↗</b></a></article>)}</div>
     </section>
+    <section className="section calculator-section" id="calculadora">
+      <div className="section-heading"><div><p className="eyebrow"><span /> Herramienta</p><h2>Calcula tu envío al instante.</h2></div><p>Ingresa el peso y, si las tienes, las medidas del bulto para estimar el costo de tu envío marítimo consolidado.</p></div>
+      <Calculator />
+    </section>
     <section className="process-section" id="proceso">
       <div className="process-media"><img src="/images/amigo-cargo-warehouse.png" alt="Equipo revisando y consolidando mercancía en una bodega en China" /><div className="media-label"><strong>Presencia operativa</strong><span>Bodega y equipo en China</span></div></div>
       <div className="process-content"><p className="eyebrow light"><span /> Así funciona</p><h2>De tu compra a tus manos, sin complicaciones.</h2><div className="steps">{process.map(([title,content],index)=><article key={title}><span>{String(index+1).padStart(2,"0")}</span><div><h3>{title}</h3><p>{content}</p></div></article>)}</div><p className="process-note">*El tiempo estimado ronda los 60 días y puede variar según temporada, naviera y condiciones operativas.</p></div>
@@ -54,6 +60,6 @@ export default function Home() {
     </section>
     <section className="why-section"><div><p className="eyebrow light"><span /> Nuestra diferencia</p><h2>Más que mover mercancía, te ayudamos a importar mejor.</h2></div><ul><li><span>01</span>Acompañamiento antes, durante y después.</li><li><span>02</span>Apoyo para validar proveedores y productos.</li><li><span>03</span>Comunicación clara en cada etapa.</li><li><span>04</span>Pagos por Zelle, efectivo y Pago Móvil.</li></ul></section>
     <section className="final-cta" id="contacto"><p className="eyebrow"><span /> Empieza hoy</p><h2>¿Listo para importar desde China?</h2><p>Cuéntanos qué quieres traer y recibe orientación para dar el siguiente paso.</p><a className="button" href={whatsappLink} target="_blank" rel="noreferrer">Hablar con un asesor <span>↗</span></a><small>Respuesta personalizada · Sin compra mínima</small></section>
-    <footer><a className="brand" href="#inicio"><span className="brand-mark">AC</span><span>AMIGO CARGO</span></a><p>Logística internacional de China a Venezuela.</p><a href="#inicio">Volver arriba ↑</a></footer>
+    <footer><a className="brand" href="#inicio"><span className="brand-mark">AC</span><span>AMIGO CARGO</span></a><p>Logística internacional de China a Venezuela.</p><a href="#inicio">Volver arriba ↑</a><a href="/login" className="footer-admin-link">Acceso administrativo</a></footer>
   </main>;
 }

@@ -11,10 +11,10 @@ export default async function LoginPage({
     <>
       <AppHeader />
       <main className="app-shell narrow">
-        <p className="app-eyebrow"><span /> Mi cuenta</p>
+        <p className="app-eyebrow"><span /> Acceso interno</p>
         <h1 className="app-title">Iniciar sesión</h1>
-        <p className="app-lead">Consulta tu casillero y el estatus de tus envíos.</p>
-        <LoginForm next={next || "/mi-cuenta"} />
+        <p className="app-lead">Acceso exclusivo para administradores de Amigo Cargo.</p>
+        <LoginForm next={next || "/admin"} />
       </main>
     </>
   );

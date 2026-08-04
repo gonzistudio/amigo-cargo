@@ -46,17 +46,19 @@ export default function Calculator() {
   const whatsappBase = "https://wa.me/?text=";
 
   return (
-    <div className="card">
-      {loading && <p className="app-lead">Cargando tarifas…</p>}
+    <div className="calc-card">
+      {loading && <div className="calc-card-body"><p className="calc-note">Cargando tarifas…</p></div>}
       {loadError && (
-        <p className="error-text">
-          No pudimos cargar las tarifas en este momento. Escríbenos por WhatsApp para una cotización directa.
-        </p>
+        <div className="calc-card-body">
+          <p className="calc-note">
+            No pudimos cargar las tarifas en este momento. Escríbenos por WhatsApp para una cotización directa.
+          </p>
+        </div>
       )}
       {tariff && (
-        <>
-          <form onSubmit={handleSubmit} className="form-grid">
-            <div className="form-field">
+        <div className="calc-card-body">
+          <form onSubmit={handleSubmit}>
+            <div className="calc-primary-field">
               <label htmlFor="weight">Peso real (kg)</label>
               <input
                 id="weight"
@@ -69,24 +71,27 @@ export default function Calculator() {
                 placeholder="Ej: 12.5"
               />
             </div>
-            <div />
-            <div className="form-field">
-              <label htmlFor="length">Largo (cm)</label>
-              <input id="length" type="number" min="0" step="1" value={length} onChange={(e) => setLength(e.target.value)} placeholder="Ej: 40" />
+
+            <div className="calc-dims">
+              <p className="calc-dims-label">Medidas del bulto (opcional)</p>
+              <div className="calc-dims-grid">
+                <div>
+                  <label htmlFor="length">Largo (cm)</label>
+                  <input id="length" type="number" min="0" step="1" value={length} onChange={(e) => setLength(e.target.value)} placeholder="40" />
+                </div>
+                <div>
+                  <label htmlFor="width">Ancho (cm)</label>
+                  <input id="width" type="number" min="0" step="1" value={width} onChange={(e) => setWidth(e.target.value)} placeholder="30" />
+                </div>
+                <div>
+                  <label htmlFor="height">Alto (cm)</label>
+                  <input id="height" type="number" min="0" step="1" value={height} onChange={(e) => setHeight(e.target.value)} placeholder="25" />
+                </div>
+              </div>
+              <p className="calc-note">Mejoran la precisión del estimado usando el peso volumétrico.</p>
             </div>
-            <div className="form-field">
-              <label htmlFor="width">Ancho (cm)</label>
-              <input id="width" type="number" min="0" step="1" value={width} onChange={(e) => setWidth(e.target.value)} placeholder="Ej: 30" />
-            </div>
-            <div className="form-field">
-              <label htmlFor="height">Alto (cm)</label>
-              <input id="height" type="number" min="0" step="1" value={height} onChange={(e) => setHeight(e.target.value)} placeholder="Ej: 25" />
-              <small>Las dimensiones son opcionales, pero mejoran la precisión del estimado.</small>
-            </div>
-            <div />
-            <div>
-              <button className="btn" type="submit">Calcular estimado</button>
-            </div>
+
+            <button className="button calc-submit" type="submit">Calcular estimado <span>→</span></button>
           </form>
 
           {result && (
@@ -121,14 +126,17 @@ export default function Calculator() {
                   <span>{formatUSD(result.handlingFee)}</span>
                 </div>
               )}
-              <p className="total" style={{ marginTop: 16 }}>{formatUSD(result.total)}</p>
-              <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 8 }}>
+              <div className="calc-total-row">
+                <span>Estimado total</span>
+                <p className="total">{formatUSD(result.total)}</p>
+              </div>
+              <p className="calc-note">
                 Estimación referencial de envío marítimo. No incluye servicios adicionales,
                 aranceles/aduana, ni tarifa de envío interno en China. El precio final puede
                 variar por temporada, naviera y condiciones operativas.
               </p>
               <a
-                className="btn"
+                className="button"
                 style={{ marginTop: 18 }}
                 target="_blank"
                 rel="noreferrer"
@@ -138,11 +146,11 @@ export default function Calculator() {
                   )} kg facturables, estimado ${formatUSD(result.total)}. Quiero confirmar mi cotización.`
                 )}`}
               >
-                Confirmar cotización por WhatsApp ↗
+                Confirmar cotización por WhatsApp <span>↗</span>
               </a>
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );

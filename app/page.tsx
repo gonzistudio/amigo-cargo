@@ -46,9 +46,20 @@ export default function Home() {
       <div className="section-heading"><div><p className="eyebrow"><span /> Lo esencial</p><h2>Todo lo que necesitas para traer tu carga.</h2></div><p>Centralizamos las etapas clave de tu importación para darte más orden, control y comunicación.</p></div>
       <div className="service-grid">{services.map(([number,title,content])=><article className="service-card" key={title}><span>{number}</span><h3>{title}</h3><p>{content}</p><a href={whatsappLink} target="_blank" rel="noreferrer">Consultar <b>↗</b></a></article>)}</div>
     </section>
-    <section className="section calculator-section" id="calculadora">
-      <div className="section-heading"><div><p className="eyebrow"><span /> Herramienta</p><h2>Calcula tu envío al instante.</h2></div><p>Ingresa el peso y, si las tienes, las medidas del bulto para estimar el costo de tu envío marítimo consolidado.</p></div>
-      <Calculator />
+    <section className="calculator-section" id="calculadora">
+      <div className="calculator-grid">
+        <div className="calculator-intro">
+          <p className="eyebrow"><span /> Herramienta</p>
+          <h2>Calcula tu envío al instante.</h2>
+          <p>Ingresa el peso y, si las tienes, las medidas del bulto para estimar el costo de tu envío marítimo consolidado.</p>
+          <ul className="calculator-facts">
+            <li>Peso facturable: el mayor entre el peso real y el volumétrico.</li>
+            <li>Incluye el mínimo de cobro y el cargo de manejo, si aplica.</li>
+            <li>Estimación referencial, sujeta a confirmación por WhatsApp.</li>
+          </ul>
+        </div>
+        <Calculator />
+      </div>
     </section>
     <section className="process-section" id="proceso">
       <div className="process-media"><img src="/images/amigo-cargo-warehouse.png" alt="Equipo revisando y consolidando mercancía en una bodega en China" /><div className="media-label"><strong>Presencia operativa</strong><span>Bodega y equipo en China</span></div></div>

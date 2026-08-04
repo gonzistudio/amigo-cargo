@@ -26,7 +26,7 @@ export default function Home() {
   return <main>
     <header className="site-header">
       <a className="brand" href="#inicio" aria-label="Amigo Cargo, inicio"><span className="brand-mark">AC</span><span>AMIGO CARGO</span></a>
-      <nav aria-label="Navegación principal"><a href="#servicios">Servicios</a><a href="#proceso">Cómo funciona</a><a href="#nosotros">Nosotros</a></nav>
+      <nav aria-label="Navegación principal"><a href="#servicios">Servicios</a><a href="#proceso">Cómo funciona</a><a href="#nosotros">Nosotros</a><a href="/calculadora">Calculadora</a><a href="/login">Mi cuenta</a></nav>
       <a className="button button-small" href={whatsappLink} target="_blank" rel="noreferrer">Cotizar envío <span>↗</span></a>
     </header>
     <section className="hero" id="inicio">

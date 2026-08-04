@@ -15,16 +15,25 @@ export type FreightEstimate = {
   chargeableWeightKg: number;
   ratePerKg: number;
   minCharge: number;
+  handlingFee: number;
+  freight: number;
   subtotal: number;
   total: number;
 };
 
 /**
- * Estima el costo de envío marítimo consolidado.
- * Peso facturable = mayor entre el peso real y el peso volumétrico
- * (volumen en m3 * factor volumétrico, configurable desde /admin/tarifas).
+ * Metodología estándar de cálculo de flete marítimo consolidado:
+ *
+ * 1. Peso volumétrico (kg) = (Largo × Ancho × Alto en cm) / 1,000,000 × factor volumétrico
+ * 2. Peso facturable (kg) = mayor entre peso real y peso volumétrico
+ * 3. Flete = peso facturable × tarifa por kg
+ * 4. Subtotal = mayor entre el flete y el mínimo de cobro
+ * 5. Total = subtotal + cargo de manejo fijo (si aplica)
+ *
+ * Todos los parámetros (tarifa/kg, factor volumétrico, mínimo, cargo de
+ * manejo) son editables desde /admin — no son valores fijos en el código.
  * Es una ESTIMACIÓN referencial: la tarifa final puede variar por
- * temporada, naviera y condiciones operativas (ver nota del brochure).
+ * temporada, naviera y condiciones operativas.
  */
 export function estimateFreight(
   weightKg: number,
@@ -32,12 +41,14 @@ export function estimateFreight(
   tariff: Tariff
 ): FreightEstimate {
   const volumetricFactor = Number(tariff.extra?.volumetric_factor_kg_per_m3 ?? 167);
+  const handlingFee = Number(tariff.extra?.handling_fee ?? 0);
   const volumetricWeightKg = volumeM3 * volumetricFactor;
   const chargeableWeightKg = Math.max(weightKg, volumetricWeightKg, 0);
   const ratePerKg = tariff.price;
   const minCharge = tariff.min_charge ?? 0;
-  const subtotal = chargeableWeightKg * ratePerKg;
-  const total = Math.max(subtotal, minCharge);
+  const freight = chargeableWeightKg * ratePerKg;
+  const subtotal = Math.max(freight, minCharge);
+  const total = subtotal + handlingFee;
 
   return {
     actualWeightKg: weightKg,
@@ -45,6 +56,8 @@ export function estimateFreight(
     chargeableWeightKg,
     ratePerKg,
     minCharge,
+    handlingFee,
+    freight,
     subtotal,
     total,
   };

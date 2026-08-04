@@ -57,3 +57,14 @@
 /* Enlace discreto de acceso administrativo en el footer */
 .footer-admin-link{font-size:11px;color:#aaa;opacity:.8}
 .footer-admin-link:hover{color:var(--blue);opacity:1}
+
+/* Logo real de Amigo Cargo (header y footer) */
+.brand-logo{height:40px;width:auto;display:block}
+footer .brand-logo.footer-logo{height:34px}
+.app-header .brand-logo{height:32px}
+@media(max-width:560px){.brand-logo{height:32px}footer .brand-logo.footer-logo{height:28px}}
+
+/* Caja de metodología de cálculo en el panel de tarifas */
+.formula-box{background:var(--soft);border:1px solid var(--line);padding:16px 18px;margin-bottom:18px;font-size:12px}
+.formula-box strong{display:block;margin-bottom:8px;font-size:12px;color:var(--ink)}
+.formula-box ol{margin:0;padding-left:18px;color:var(--muted);line-height:1.7}

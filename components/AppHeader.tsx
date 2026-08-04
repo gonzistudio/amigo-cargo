@@ -11,8 +11,7 @@ export default async function AppHeader() {
   return (
     <header className="app-header">
       <Link className="brand" href="/" aria-label="Amigo Cargo, inicio">
-        <span className="brand-mark">AC</span>
-        <span>AMIGO CARGO</span>
+        <img src="/logo-amigo-cargo.svg" alt="Amigo Cargo" className="brand-logo" />
       </Link>
       <nav aria-label="Navegación">
         <Link href="/">Volver al sitio</Link>

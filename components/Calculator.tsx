@@ -111,6 +111,16 @@ export default function Calculator() {
                 <span>Mínimo de cobro</span>
                 <span>{formatUSD(result.minCharge)}</span>
               </div>
+              <div className="result-line">
+                <span>Flete (subtotal)</span>
+                <span>{formatUSD(result.subtotal)}</span>
+              </div>
+              {result.handlingFee > 0 && (
+                <div className="result-line">
+                  <span>Cargo de manejo</span>
+                  <span>{formatUSD(result.handlingFee)}</span>
+                </div>
+              )}
               <p className="total" style={{ marginTop: 16 }}>{formatUSD(result.total)}</p>
               <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 8 }}>
                 Estimación referencial de envío marítimo. No incluye servicios adicionales,

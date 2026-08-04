@@ -13,9 +13,10 @@ export default async function AdminTarifasPage() {
     <div>
       <p className="app-lead">
         Estos valores alimentan la calculadora pública de la landing page y las
-        cotizaciones de servicios adicionales. El envío marítimo usa peso
-        facturable (mayor entre peso real y volumétrico; el factor volumétrico
-        se ajusta en Supabase → tabla <code>tariffs</code>, columna <code>extra</code>).
+        cotizaciones de servicios adicionales. Para el envío marítimo puedes
+        ajustar cada parámetro de la fórmula (tarifa, factor volumétrico,
+        mínimo de cobro y cargo de manejo), no solo el precio — la
+        metodología de cálculo se explica en cada tarjeta.
       </p>
       {(tariffs as Tariff[] | null)?.map((t) => (
         <TariffRow tariff={t} key={t.service_key} />

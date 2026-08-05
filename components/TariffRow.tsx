@@ -16,6 +16,7 @@ export default function TariffRow({ tariff }: { tariff: Tariff }) {
   const [state, formAction, pending] = useActionState(updateTariff, initialState);
   const volumetricFactor = Number(tariff.extra?.volumetric_factor_kg_per_m3 ?? 167);
   const handlingFee = Number(tariff.extra?.handling_fee ?? 0);
+  const regionalSurcharge = Number(tariff.extra?.regional_surcharge_percent ?? 15);
   const customNote = String(tariff.extra?.nota ?? "");
 
   return (
@@ -38,7 +39,8 @@ export default function TariffRow({ tariff }: { tariff: Tariff }) {
             <li>Peso facturable = el mayor entre peso real y peso volumétrico</li>
             <li>Flete = peso facturable × tarifa por kg</li>
             <li>Subtotal = el mayor entre el flete y el mínimo de cobro</li>
-            <li>Total = subtotal + cargo de manejo (si aplica)</li>
+            <li>Si el destino no es Distrito Capital, se suma el recargo regional sobre el subtotal</li>
+            <li>Total = subtotal + recargo regional (si aplica) + cargo de manejo (si aplica)</li>
           </ol>
         </div>
       )}
@@ -65,6 +67,11 @@ export default function TariffRow({ tariff }: { tariff: Tariff }) {
               <label>Cargo de manejo fijo (USD, opcional)</label>
               <input name="handling_fee" type="number" step="0.01" min="0" defaultValue={handlingFee} />
               <small>Se suma al final, aparte del flete. Déjalo en 0 si no aplica.</small>
+            </div>
+            <div className="form-field">
+              <label>Recargo fuera de Distrito Capital (%)</label>
+              <input name="regional_surcharge_percent" type="number" step="0.1" min="0" defaultValue={regionalSurcharge} />
+              <small>Se aplica automáticamente sobre el flete cuando el cliente elige un estado distinto a Distrito Capital.</small>
             </div>
           </>
         )}

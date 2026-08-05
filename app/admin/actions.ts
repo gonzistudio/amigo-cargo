@@ -24,9 +24,11 @@ export async function updateTariff(_prev: AdminState, formData: FormData): Promi
   if (unit === "kg") {
     const volumetric_factor = parseFloat(String(formData.get("volumetric_factor") || "167")) || 167;
     const handling_fee = parseFloat(String(formData.get("handling_fee") || "0")) || 0;
+    const regional_surcharge_percent = parseFloat(String(formData.get("regional_surcharge_percent") || "15")) || 0;
     updatePayload.extra = {
       volumetric_factor_kg_per_m3: volumetric_factor,
       handling_fee,
+      regional_surcharge_percent,
     };
   } else if (unit === "custom") {
     const nota = String(formData.get("custom_note") || "").trim();

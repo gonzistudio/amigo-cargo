@@ -4,10 +4,40 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { estimateFreight, formatUSD, type FreightEstimate, type Tariff } from "@/lib/pricing";
 
+const CAPITAL = "Distrito Capital";
+
+const VENEZUELA_STATES = [
+  "Distrito Capital",
+  "Amazonas",
+  "Anzoátegui",
+  "Apure",
+  "Aragua",
+  "Barinas",
+  "Bolívar",
+  "Carabobo",
+  "Cojedes",
+  "Delta Amacuro",
+  "Falcón",
+  "Guárico",
+  "Lara",
+  "Mérida",
+  "Miranda",
+  "Monagas",
+  "Nueva Esparta",
+  "Portuguesa",
+  "Sucre",
+  "Táchira",
+  "Trujillo",
+  "La Guaira (Vargas)",
+  "Yaracuy",
+  "Zulia",
+];
+
 export default function Calculator() {
   const [tariff, setTariff] = useState<Tariff | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+  const [region, setRegion] = useState(CAPITAL);
   const [weight, setWeight] = useState("");
   const [length, setLength] = useState("");
   const [width, setWidth] = useState("");
@@ -32,16 +62,22 @@ export default function Calculator() {
       });
   }, []);
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  // Cálculo en tiempo real: se recalcula automáticamente al cambiar
+  // cualquier campo, sin necesidad de un botón de "Calcular".
+  useEffect(() => {
     if (!tariff) return;
     const w = parseFloat(weight) || 0;
+    if (w <= 0) {
+      setResult(null);
+      return;
+    }
     const l = parseFloat(length) || 0;
     const wd = parseFloat(width) || 0;
     const h = parseFloat(height) || 0;
     const volumeM3 = (l * wd * h) / 1_000_000; // cm -> m3
-    setResult(estimateFreight(w, volumeM3, tariff));
-  }
+    const outsideCapital = region !== CAPITAL;
+    setResult(estimateFreight(w, volumeM3, tariff, { outsideCapital }));
+  }, [tariff, region, weight, length, width, height]);
 
   const whatsappBase = "https://wa.me/?text=";
 
@@ -57,42 +93,52 @@ export default function Calculator() {
       )}
       {tariff && (
         <div className="calc-card-body">
-          <form onSubmit={handleSubmit}>
-            <div className="calc-primary-field">
-              <label htmlFor="weight">Peso real (kg)</label>
-              <input
-                id="weight"
-                type="number"
-                min="0"
-                step="0.1"
-                required
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-                placeholder="Ej: 12.5"
-              />
-            </div>
+          <div className="calc-region">
+            <label htmlFor="region">Lugar de recepción</label>
+            <select id="region" value={region} onChange={(e) => setRegion(e.target.value)}>
+              {VENEZUELA_STATES.map((state) => (
+                <option key={state} value={state}>
+                  {state}
+                </option>
+              ))}
+            </select>
+          </div>
 
-            <div className="calc-dims">
-              <p className="calc-dims-label">Medidas del bulto (opcional)</p>
-              <div className="calc-dims-grid">
-                <div>
-                  <label htmlFor="length">Largo (cm)</label>
-                  <input id="length" type="number" min="0" step="1" value={length} onChange={(e) => setLength(e.target.value)} placeholder="40" />
-                </div>
-                <div>
-                  <label htmlFor="width">Ancho (cm)</label>
-                  <input id="width" type="number" min="0" step="1" value={width} onChange={(e) => setWidth(e.target.value)} placeholder="30" />
-                </div>
-                <div>
-                  <label htmlFor="height">Alto (cm)</label>
-                  <input id="height" type="number" min="0" step="1" value={height} onChange={(e) => setHeight(e.target.value)} placeholder="25" />
-                </div>
+          <div className="calc-primary-field">
+            <label htmlFor="weight">Peso real (kg)</label>
+            <input
+              id="weight"
+              type="number"
+              min="0"
+              step="0.1"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              placeholder="Ej: 12.5"
+            />
+          </div>
+
+          <div className="calc-dims">
+            <p className="calc-dims-label">Medidas del bulto (opcional)</p>
+            <div className="calc-dims-grid">
+              <div>
+                <label htmlFor="length">Largo (cm)</label>
+                <input id="length" type="number" min="0" step="1" value={length} onChange={(e) => setLength(e.target.value)} placeholder="40" />
               </div>
-              <p className="calc-note">Mejoran la precisión del estimado usando el peso volumétrico.</p>
+              <div>
+                <label htmlFor="width">Ancho (cm)</label>
+                <input id="width" type="number" min="0" step="1" value={width} onChange={(e) => setWidth(e.target.value)} placeholder="30" />
+              </div>
+              <div>
+                <label htmlFor="height">Alto (cm)</label>
+                <input id="height" type="number" min="0" step="1" value={height} onChange={(e) => setHeight(e.target.value)} placeholder="25" />
+              </div>
             </div>
+            <p className="calc-note">Mejoran la precisión del estimado usando el peso volumétrico. El precio se actualiza al instante.</p>
+          </div>
 
-            <button className="button calc-submit" type="submit">Calcular estimado <span>→</span></button>
-          </form>
+          {!result && (
+            <p className="calc-note calc-live-hint">Ingresa el peso real para ver el estimado en tiempo real.</p>
+          )}
 
           {result && (
             <div className="result-box">
@@ -120,6 +166,12 @@ export default function Calculator() {
                 <span>Flete (subtotal)</span>
                 <span>{formatUSD(result.subtotal)}</span>
               </div>
+              {result.outsideCapital && (
+                <div className="result-line">
+                  <span>Recargo fuera de Distrito Capital ({result.regionalSurchargePercent}%)</span>
+                  <span>{formatUSD(result.regionalSurchargeAmount)}</span>
+                </div>
+              )}
               {result.handlingFee > 0 && (
                 <div className="result-line">
                   <span>Cargo de manejo</span>
@@ -143,7 +195,7 @@ export default function Calculator() {
                 href={`${whatsappBase}${encodeURIComponent(
                   `Hola Amigo Cargo, hice una estimación en la web: ${result.chargeableWeightKg.toFixed(
                     2
-                  )} kg facturables, estimado ${formatUSD(result.total)}. Quiero confirmar mi cotización.`
+                  )} kg facturables hacia ${region}, estimado ${formatUSD(result.total)}. Quiero confirmar mi cotización.`
                 )}`}
               >
                 Confirmar cotización por WhatsApp <span>↗</span>

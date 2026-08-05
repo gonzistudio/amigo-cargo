@@ -18,6 +18,9 @@ export type FreightEstimate = {
   handlingFee: number;
   freight: number;
   subtotal: number;
+  regionalSurchargePercent: number;
+  regionalSurchargeAmount: number;
+  outsideCapital: boolean;
   total: number;
 };
 
@@ -28,27 +31,34 @@ export type FreightEstimate = {
  * 2. Peso facturable (kg) = mayor entre peso real y peso volumétrico
  * 3. Flete = peso facturable × tarifa por kg
  * 4. Subtotal = mayor entre el flete y el mínimo de cobro
- * 5. Total = subtotal + cargo de manejo fijo (si aplica)
+ * 5. Si el destino no es Distrito Capital, se suma el recargo regional
+ *    (porcentaje configurable) calculado sobre el subtotal
+ * 6. Total = subtotal + recargo regional (si aplica) + cargo de manejo fijo (si aplica)
  *
  * Todos los parámetros (tarifa/kg, factor volumétrico, mínimo, cargo de
- * manejo) son editables desde /admin — no son valores fijos en el código.
- * Es una ESTIMACIÓN referencial: la tarifa final puede variar por
- * temporada, naviera y condiciones operativas.
+ * manejo, recargo regional) son editables desde /admin — no son valores
+ * fijos en el código. Es una ESTIMACIÓN referencial: la tarifa final puede
+ * variar por temporada, naviera y condiciones operativas.
  */
 export function estimateFreight(
   weightKg: number,
   volumeM3: number,
-  tariff: Tariff
+  tariff: Tariff,
+  options: { outsideCapital?: boolean } = {}
 ): FreightEstimate {
   const volumetricFactor = Number(tariff.extra?.volumetric_factor_kg_per_m3 ?? 167);
   const handlingFee = Number(tariff.extra?.handling_fee ?? 0);
+  const regionalSurchargePercent = Number(tariff.extra?.regional_surcharge_percent ?? 15);
+  const outsideCapital = options.outsideCapital ?? false;
+
   const volumetricWeightKg = volumeM3 * volumetricFactor;
   const chargeableWeightKg = Math.max(weightKg, volumetricWeightKg, 0);
   const ratePerKg = tariff.price;
   const minCharge = tariff.min_charge ?? 0;
   const freight = chargeableWeightKg * ratePerKg;
   const subtotal = Math.max(freight, minCharge);
-  const total = subtotal + handlingFee;
+  const regionalSurchargeAmount = outsideCapital ? subtotal * (regionalSurchargePercent / 100) : 0;
+  const total = subtotal + regionalSurchargeAmount + handlingFee;
 
   return {
     actualWeightKg: weightKg,
@@ -59,6 +69,9 @@ export function estimateFreight(
     handlingFee,
     freight,
     subtotal,
+    regionalSurchargePercent,
+    regionalSurchargeAmount,
+    outsideCapital,
     total,
   };
 }

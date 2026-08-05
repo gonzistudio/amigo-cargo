@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import AppHeader from "@/components/AppHeader";
+import AdminNav from "@/components/AdminNav";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -18,7 +19,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <AppHeader />
       <main className="app-shell">
         <p className="app-eyebrow"><span /> Panel interno</p>
-        <h1 className="app-title">Tarifas</h1>
+        <h1 className="app-title">Panel administrativo</h1>
+        <AdminNav />
         {children}
       </main>
     </>

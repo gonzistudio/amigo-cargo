@@ -139,16 +139,43 @@ En el dashboard de Supabase → SQL Editor, ejecuta el contenido de
 No se usa la `service_role key` — todo opera respetando RLS con la sesión del
 usuario.
 
-### 3. Crear el primer administrador
+### 3. Crear el primer administrador (y los siguientes)
 
-1. Regístrate normalmente desde `/registro`.
-2. En Supabase → Table Editor → `profiles`, cambia tu fila: `role` → `admin`.
-3. Refresca `/admin` en la web.
+No hay registro público. Cada admin se crea a mano:
 
-### 4. Rutas nuevas
+1. Supabase → **Authentication → Users → Add user** → correo y contraseña.
+2. Supabase → **Table Editor → profiles** → busca esa fila (se crea sola por
+   trigger) → cambia `role` a `admin`.
+3. Comparte esas credenciales con la persona — puede entrar a `/login` y
+   cambiar el correo y/o la contraseña desde **Mi cuenta** dentro del panel,
+   sin que tengas que tocar Supabase de nuevo.
 
-- `/calculadora` — calculadora pública de envío marítimo (peso/volumen).
-- `/login`, `/registro` — autenticación de clientes.
-- `/mi-cuenta` — casillero y línea de tiempo de envíos del cliente.
-- `/admin`, `/admin/tarifas`, `/admin/envios`, `/admin/usuarios` — panel
-  interno (requiere rol `admin`).
+### 4. Rutas actuales (fase 1)
+
+- `/` — landing pública, con la calculadora embebida en `#calculadora`.
+- `/login` — acceso exclusivo de administradores (sin registro público, sin
+  enlace visible desde la landing).
+- `/admin` — tarifas (fórmula de envío marítimo, servicios adicionales).
+- `/admin/cuenta` — el admin logueado cambia su propio correo/contraseña.
+
+Las tablas `profiles`, `shipments` y `shipment_events` ya existen en Supabase
+para la fase 2 (cuentas de cliente, casilleros, trackings), pero no tienen UI
+todavía — se integran cuando se retome ese alcance.
+
+### 5. Panel admin en subdominio propio
+
+Por defecto `/admin` y `/login` funcionan en cualquier dominio (útil para
+probar antes de tener el dominio final). Para que el panel viva en un
+subdominio aparte y desaparezca del dominio principal:
+
+1. Vercel → Project Settings → **Domains** → agrega `panel.tudominio.com`
+   (o el nombre que prefieras) apuntando a este mismo proyecto.
+2. Vercel → Project Settings → **Environment Variables** → agrega:
+   - `ADMIN_HOSTNAME` = `panel.tudominio.com` (Production)
+   - `SITE_URL` = `https://tudominio.com` (Production) — para que el enlace
+     "Volver al sitio" dentro del panel apunte al dominio principal.
+3. Redeploy. A partir de ahí:
+   - `panel.tudominio.com` solo muestra `/admin` y `/login` (cualquier otra
+     ruta redirige ahí).
+   - `tudominio.com` deja de servir `/admin` y `/login` por completo
+     (redirige al inicio), aunque alguien adivine la URL.

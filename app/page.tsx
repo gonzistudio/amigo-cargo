@@ -71,6 +71,6 @@ export default function Home() {
     </section>
     <section className="why-section"><div><p className="eyebrow light"><span /> Nuestra diferencia</p><h2>Más que mover mercancía, te ayudamos a importar mejor.</h2></div><ul><li><span>01</span>Acompañamiento antes, durante y después.</li><li><span>02</span>Apoyo para validar proveedores y productos.</li><li><span>03</span>Comunicación clara en cada etapa.</li><li><span>04</span>Pagos por Zelle, efectivo y Pago Móvil.</li></ul></section>
     <section className="final-cta" id="contacto"><p className="eyebrow"><span /> Empieza hoy</p><h2>¿Listo para importar desde China?</h2><p>Cuéntanos qué quieres traer y recibe orientación para dar el siguiente paso.</p><a className="button" href={whatsappLink} target="_blank" rel="noreferrer">Hablar con un asesor <span>↗</span></a><small>Respuesta personalizada · Sin compra mínima</small></section>
-    <footer><a className="brand" href="#inicio"><img src="/logo-amigo-cargo.svg" alt="Amigo Cargo" className="brand-logo footer-logo" /></a><p>Logística internacional de China a Venezuela.</p><a href="#inicio">Volver arriba ↑</a><a href="/login" className="footer-admin-link">Acceso administrativo</a></footer>
+    <footer><a className="brand" href="#inicio"><img src="/logo-amigo-cargo.svg" alt="Amigo Cargo" className="brand-logo footer-logo" /></a><p>Logística internacional de China a Venezuela.</p><a href="#inicio">Volver arriba ↑</a></footer>
   </main>;
 }

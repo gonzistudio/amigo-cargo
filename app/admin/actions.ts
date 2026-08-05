@@ -14,6 +14,13 @@ export async function updateTariff(_prev: AdminState, formData: FormData): Promi
   const min_charge = min_charge_raw === "" ? null : parseFloat(min_charge_raw);
   const active = formData.get("active") === "on";
 
+  if (unit !== "custom" && (!Number.isFinite(price) || price <= 0)) {
+    return { error: "La tarifa debe ser mayor que 0.", success: null };
+  }
+  if (min_charge !== null && (!Number.isFinite(min_charge) || min_charge < 0)) {
+    return { error: "El mínimo de cobro debe ser 0 o mayor.", success: null };
+  }
+
   const updatePayload: {
     price: number;
     min_charge: number | null;
@@ -22,13 +29,24 @@ export async function updateTariff(_prev: AdminState, formData: FormData): Promi
   } = { price, min_charge, active };
 
   if (unit === "kg") {
-    const volumetric_factor = parseFloat(String(formData.get("volumetric_factor") || "167")) || 167;
-    const handling_fee = parseFloat(String(formData.get("handling_fee") || "0")) || 0;
-    const regional_surcharge_percent = parseFloat(String(formData.get("regional_surcharge_percent") || "15")) || 0;
+    const maritime_weight_factor = parseFloat(String(formData.get("maritime_weight_factor") || "1000"));
+    const fixed_handling_fee = parseFloat(String(formData.get("fixed_handling_fee") || "0"));
+    const outside_capital_surcharge = parseFloat(String(formData.get("outside_capital_surcharge") || "15"));
+
+    if (!Number.isFinite(maritime_weight_factor) || maritime_weight_factor <= 0) {
+      return { error: "El factor marítimo W/M debe ser mayor que 0.", success: null };
+    }
+    if (!Number.isFinite(fixed_handling_fee) || fixed_handling_fee < 0) {
+      return { error: "El cargo de manejo debe ser 0 o mayor.", success: null };
+    }
+    if (!Number.isFinite(outside_capital_surcharge) || outside_capital_surcharge < 0 || outside_capital_surcharge > 100) {
+      return { error: "El recargo fuera de Distrito Capital debe estar entre 0 y 100.", success: null };
+    }
+
     updatePayload.extra = {
-      volumetric_factor_kg_per_m3: volumetric_factor,
-      handling_fee,
-      regional_surcharge_percent,
+      maritime_weight_factor,
+      fixed_handling_fee,
+      outside_capital_surcharge,
     };
   } else if (unit === "custom") {
     const nota = String(formData.get("custom_note") || "").trim();

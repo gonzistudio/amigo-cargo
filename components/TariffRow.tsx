@@ -6,7 +6,7 @@ import type { Tariff } from "@/lib/pricing";
 
 const initialState: AdminState = { error: null, success: null };
 const unitLabel: Record<Tariff["unit"], string> = {
-  kg: "Fórmula por peso (kg)",
+  kg: "Fórmula marítima LCL (CBM)",
   fixed: "Precio fijo",
   percent: "Porcentaje del monto",
   custom: "A cotizar",
@@ -14,9 +14,13 @@ const unitLabel: Record<Tariff["unit"], string> = {
 
 export default function TariffRow({ tariff }: { tariff: Tariff }) {
   const [state, formAction, pending] = useActionState(updateTariff, initialState);
-  const volumetricFactor = Number(tariff.extra?.volumetric_factor_kg_per_m3 ?? 167);
-  const handlingFee = Number(tariff.extra?.handling_fee ?? 0);
-  const regionalSurcharge = Number(tariff.extra?.regional_surcharge_percent ?? 15);
+  const maritimeFactor = Number(
+    tariff.extra?.maritime_weight_factor ?? tariff.extra?.volumetric_factor_kg_per_m3 ?? 1000
+  );
+  const handlingFee = Number(tariff.extra?.fixed_handling_fee ?? tariff.extra?.handling_fee ?? 0);
+  const regionalSurcharge = Number(
+    tariff.extra?.outside_capital_surcharge ?? tariff.extra?.regional_surcharge_percent ?? 15
+  );
   const customNote = String(tariff.extra?.nota ?? "");
 
   return (
@@ -33,22 +37,23 @@ export default function TariffRow({ tariff }: { tariff: Tariff }) {
 
       {tariff.unit === "kg" && (
         <div className="formula-box">
-          <strong>Metodología de cálculo</strong>
+          <strong>Metodología de cálculo (LCL marítimo — CBM / W-M)</strong>
           <ol>
-            <li>Peso volumétrico = (Largo × Ancho × Alto en cm ÷ 1,000,000) × factor volumétrico</li>
-            <li>Peso facturable = el mayor entre peso real y peso volumétrico</li>
-            <li>Flete = peso facturable × tarifa por kg</li>
-            <li>Subtotal = el mayor entre el flete y el mínimo de cobro</li>
-            <li>Si el destino no es Distrito Capital, se suma el recargo regional sobre el subtotal</li>
-            <li>Total = subtotal + recargo regional (si aplica) + cargo de manejo (si aplica)</li>
+            <li>Volumen físico (CBM) = (Largo × Ancho × Alto en cm) ÷ 1,000,000</li>
+            <li>Volumen equivalente por peso (CBM) = peso total (kg) ÷ factor marítimo W/M</li>
+            <li>CBM facturable = el mayor entre el volumen físico y el equivalente por peso</li>
+            <li>Subtotal = CBM facturable × tarifa por CBM</li>
+            <li>Se aplica el mínimo de cobro si el subtotal queda por debajo</li>
+            <li>Se suma el cargo de manejo fijo (si aplica)</li>
+            <li>Si el destino no es Distrito Capital, se suma el recargo regional sobre ese subtotal</li>
           </ol>
         </div>
       )}
 
       <div className="form-grid">
         <div className="form-field">
-          <label>{tariff.unit === "percent" ? "Porcentaje (%)" : tariff.unit === "kg" ? "Tarifa por kg (USD)" : "Precio (USD)"}</label>
-          <input name="price" type="number" step="0.01" min="0" defaultValue={tariff.price} disabled={tariff.unit === "custom"} />
+          <label>{tariff.unit === "percent" ? "Porcentaje (%)" : tariff.unit === "kg" ? "Tarifa marítima por CBM (USD)" : "Precio (USD)"}</label>
+          <input name="price" type="number" step="0.01" min="0.01" defaultValue={tariff.price} disabled={tariff.unit === "custom"} />
         </div>
         {tariff.unit !== "percent" && tariff.unit !== "custom" && (
           <div className="form-field">
@@ -59,18 +64,18 @@ export default function TariffRow({ tariff }: { tariff: Tariff }) {
         {tariff.unit === "kg" && (
           <>
             <div className="form-field">
-              <label>Factor volumétrico (kg por m³)</label>
-              <input name="volumetric_factor" type="number" step="1" min="1" defaultValue={volumetricFactor} />
-              <small>Estándar de la industria: 167. Súbelo para que el peso volumétrico pese menos en el cálculo.</small>
+              <label>Factor marítimo W/M (kg por m³)</label>
+              <input name="maritime_weight_factor" type="number" step="1" min="1" defaultValue={maritimeFactor} />
+              <small>Referencia marítima LCL para comparar volumen y peso. Valor estándar: 1.000 kg por m³.</small>
             </div>
             <div className="form-field">
               <label>Cargo de manejo fijo (USD, opcional)</label>
-              <input name="handling_fee" type="number" step="0.01" min="0" defaultValue={handlingFee} />
+              <input name="fixed_handling_fee" type="number" step="0.01" min="0" defaultValue={handlingFee} />
               <small>Se suma al final, aparte del flete. Déjalo en 0 si no aplica.</small>
             </div>
             <div className="form-field">
               <label>Recargo fuera de Distrito Capital (%)</label>
-              <input name="regional_surcharge_percent" type="number" step="0.1" min="0" defaultValue={regionalSurcharge} />
+              <input name="outside_capital_surcharge" type="number" step="0.1" min="0" max="100" defaultValue={regionalSurcharge} />
               <small>Se aplica automáticamente sobre el flete cuando el cliente elige un estado distinto a Distrito Capital.</small>
             </div>
           </>

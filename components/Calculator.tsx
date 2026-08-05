@@ -133,7 +133,7 @@ export default function Calculator() {
                 <input id="height" type="number" min="0" step="1" value={height} onChange={(e) => setHeight(e.target.value)} placeholder="25" />
               </div>
             </div>
-            <p className="calc-note">Mejoran la precisión del estimado usando el peso volumétrico. El precio se actualiza al instante.</p>
+            <p className="calc-note">Mejoran la precisión del estimado. El precio se actualiza al instante.</p>
           </div>
 
           {!result && (
@@ -142,30 +142,18 @@ export default function Calculator() {
 
           {result && (
             <div className="result-box">
-              <div className="result-line">
-                <span>Peso real</span>
-                <span>{result.actualWeightKg.toFixed(2)} kg</span>
-              </div>
-              <div className="result-line">
-                <span>Peso volumétrico</span>
-                <span>{result.volumetricWeightKg.toFixed(2)} kg</span>
-              </div>
-              <div className="result-line">
-                <span>Peso facturable (mayor de los dos)</span>
-                <span>{result.chargeableWeightKg.toFixed(2)} kg</span>
-              </div>
-              <div className="result-line">
-                <span>Tarifa por kg</span>
-                <span>{formatUSD(result.ratePerKg)}</span>
-              </div>
-              <div className="result-line">
-                <span>Mínimo de cobro</span>
-                <span>{formatUSD(result.minCharge)}</span>
-              </div>
-              <div className="result-line">
-                <span>Flete (subtotal)</span>
-                <span>{formatUSD(result.subtotal)}</span>
-              </div>
+              {result.physicalCbm > 0 && (
+                <div className="result-line">
+                  <span>Volumen estimado</span>
+                  <span>{result.physicalCbm.toFixed(3)} m³</span>
+                </div>
+              )}
+              {result.minimumApplied && (
+                <div className="result-line">
+                  <span>Mínimo de cobro aplicado</span>
+                  <span>{formatUSD(result.minCharge)}</span>
+                </div>
+              )}
               {result.outsideCapital && (
                 <div className="result-line">
                   <span>Recargo fuera de Distrito Capital ({result.regionalSurchargePercent}%)</span>
@@ -193,9 +181,9 @@ export default function Calculator() {
                 target="_blank"
                 rel="noreferrer"
                 href={`${whatsappBase}${encodeURIComponent(
-                  `Hola Amigo Cargo, hice una estimación en la web: ${result.chargeableWeightKg.toFixed(
-                    2
-                  )} kg facturables hacia ${region}, estimado ${formatUSD(result.total)}. Quiero confirmar mi cotización.`
+                  `Hola Amigo Cargo, hice una estimación en la web hacia ${region}: estimado ${formatUSD(
+                    result.total
+                  )}. Quiero confirmar mi cotización.`
                 )}`}
               >
                 Confirmar cotización por WhatsApp <span>↗</span>

@@ -10,14 +10,21 @@ export type Tariff = {
 };
 
 export type FreightEstimate = {
-  actualWeightKg: number;
-  volumetricWeightKg: number;
-  chargeableWeightKg: number;
-  ratePerKg: number;
+  /** Volumen físico del bulto (L×A×A cm × cantidad, en m³ / CBM). */
+  physicalCbm: number;
+  /** Volumen equivalente al comparar el peso contra el factor marítimo (uso interno, no se muestra al público). */
+  weightBasedCbm: number;
+  /** CBM facturable: el mayor entre el físico y el equivalente por peso. */
+  chargeableCbm: number;
+  ratePerCbm: number;
   minCharge: number;
+  /** true si el mínimo de cobro terminó determinando el subtotal. */
+  minimumApplied: boolean;
   handlingFee: number;
+  /** CBM facturable × tarifa por CBM, antes de mínimo/manejo/recargo. */
   freight: number;
-  subtotal: number;
+  /** Subtotal ya con mínimo de cobro y cargo de manejo aplicados (antes del recargo regional). */
+  subtotalWithHandling: number;
   regionalSurchargePercent: number;
   regionalSurchargeAmount: number;
   outsideCapital: boolean;
@@ -25,50 +32,71 @@ export type FreightEstimate = {
 };
 
 /**
- * Metodología estándar de cálculo de flete marítimo consolidado:
+ * Metodología de cálculo LCL marítimo (carga consolidada), basada en CBM
+ * y W/M ("weight or measurement" — se cobra por lo que sea mayor entre
+ * volumen y el equivalente en volumen del peso):
  *
- * 1. Peso volumétrico (kg) = (Largo × Ancho × Alto en cm) / 1,000,000 × factor volumétrico
- * 2. Peso facturable (kg) = mayor entre peso real y peso volumétrico
- * 3. Flete = peso facturable × tarifa por kg
- * 4. Subtotal = mayor entre el flete y el mínimo de cobro
- * 5. Si el destino no es Distrito Capital, se suma el recargo regional
- *    (porcentaje configurable) calculado sobre el subtotal
- * 6. Total = subtotal + recargo regional (si aplica) + cargo de manejo fijo (si aplica)
+ * 1. CBM físico = (Largo × Ancho × Alto en cm × cantidad de bultos) / 1,000,000
+ * 2. CBM por peso = peso total (kg) / factor marítimo W/M
+ * 3. CBM facturable = el mayor entre el CBM físico y el CBM por peso
+ * 4. Subtotal (flete) = CBM facturable × tarifa por CBM
+ * 5. Se aplica el mínimo de cobro si el flete queda por debajo
+ * 6. Se suma el cargo de manejo fijo (si aplica)
+ * 7. Si el destino no es Distrito Capital, se suma el recargo regional
+ *    (porcentaje configurable) calculado sobre el subtotal ya con manejo
+ * 8. Total = subtotal con manejo + recargo regional (si aplica)
  *
- * Todos los parámetros (tarifa/kg, factor volumétrico, mínimo, cargo de
+ * Todos los parámetros (tarifa por CBM, factor marítimo, mínimo, cargo de
  * manejo, recargo regional) son editables desde /admin — no son valores
  * fijos en el código. Es una ESTIMACIÓN referencial: la tarifa final puede
  * variar por temporada, naviera y condiciones operativas.
+ *
+ * Compatibilidad: si una tarifa todavía no fue editada desde el nuevo
+ * formulario, se leen los nombres anteriores (volumetric_factor_kg_per_m3,
+ * handling_fee, regional_surcharge_percent) como respaldo.
  */
 export function estimateFreight(
   weightKg: number,
   volumeM3: number,
   tariff: Tariff,
-  options: { outsideCapital?: boolean } = {}
+  options: { outsideCapital?: boolean; quantity?: number } = {}
 ): FreightEstimate {
-  const volumetricFactor = Number(tariff.extra?.volumetric_factor_kg_per_m3 ?? 167);
-  const handlingFee = Number(tariff.extra?.handling_fee ?? 0);
-  const regionalSurchargePercent = Number(tariff.extra?.regional_surcharge_percent ?? 15);
+  const quantity = options.quantity && options.quantity > 0 ? options.quantity : 1;
   const outsideCapital = options.outsideCapital ?? false;
 
-  const volumetricWeightKg = volumeM3 * volumetricFactor;
-  const chargeableWeightKg = Math.max(weightKg, volumetricWeightKg, 0);
-  const ratePerKg = tariff.price;
-  const minCharge = tariff.min_charge ?? 0;
-  const freight = chargeableWeightKg * ratePerKg;
-  const subtotal = Math.max(freight, minCharge);
-  const regionalSurchargeAmount = outsideCapital ? subtotal * (regionalSurchargePercent / 100) : 0;
-  const total = subtotal + regionalSurchargeAmount + handlingFee;
+  const ratePerCbm = Number(tariff.price ?? 0);
+  const minCharge = Number(tariff.min_charge ?? 0);
+  const maritimeWeightFactor = Number(
+    tariff.extra?.maritime_weight_factor ?? tariff.extra?.volumetric_factor_kg_per_m3 ?? 1000
+  );
+  const handlingFee = Number(tariff.extra?.fixed_handling_fee ?? tariff.extra?.handling_fee ?? 0);
+  const regionalSurchargePercent = Number(
+    tariff.extra?.outside_capital_surcharge ?? tariff.extra?.regional_surcharge_percent ?? 15
+  );
+
+  const physicalCbm = volumeM3 * quantity;
+  const weightBasedCbm = maritimeWeightFactor > 0 ? weightKg / maritimeWeightFactor : 0;
+  const chargeableCbm = Math.max(physicalCbm, weightBasedCbm, 0);
+
+  const freight = chargeableCbm * ratePerCbm;
+  const minimumApplied = minCharge > 0 && freight < minCharge;
+  const subtotalWithMinimum = minCharge > 0 ? Math.max(freight, minCharge) : freight;
+  const subtotalWithHandling = subtotalWithMinimum + handlingFee;
+  const regionalSurchargeAmount = outsideCapital
+    ? subtotalWithHandling * (regionalSurchargePercent / 100)
+    : 0;
+  const total = subtotalWithHandling + regionalSurchargeAmount;
 
   return {
-    actualWeightKg: weightKg,
-    volumetricWeightKg,
-    chargeableWeightKg,
-    ratePerKg,
+    physicalCbm,
+    weightBasedCbm,
+    chargeableCbm,
+    ratePerCbm,
     minCharge,
+    minimumApplied,
     handlingFee,
     freight,
-    subtotal,
+    subtotalWithHandling,
     regionalSurchargePercent,
     regionalSurchargeAmount,
     outsideCapital,

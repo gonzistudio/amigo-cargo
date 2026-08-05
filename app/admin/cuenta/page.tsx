@@ -8,7 +8,7 @@ export default async function CuentaPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login?next=/admin/cuenta");
+  if (!user) redirect("/login");
 
   return (
     <div>

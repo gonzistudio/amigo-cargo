@@ -71,7 +71,7 @@ export async function updateSession(request: NextRequest) {
   if (isAdminRoute && pathname !== "/login" && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
-    url.searchParams.set("next", pathname);
+    url.search = "";
     return NextResponse.redirect(url);
   }
 

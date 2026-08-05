@@ -5,12 +5,11 @@ import { signIn, type AuthState } from "@/app/actions/auth";
 
 const initialState: AuthState = { error: null };
 
-export default function LoginForm({ next }: { next: string }) {
+export default function LoginForm() {
   const [state, formAction, pending] = useActionState(signIn, initialState);
 
   return (
     <form action={formAction} className="card">
-      <input type="hidden" name="next" value={next} />
       {state.error && <p className="error-text">{state.error}</p>}
       <div className="form-field">
         <label htmlFor="email">Correo</label>

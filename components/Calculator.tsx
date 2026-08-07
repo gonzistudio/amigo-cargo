@@ -262,7 +262,7 @@ export default function Calculator() {
                       <input type="number" min="0" step="1" value={box.height} onChange={(e) => updateBox(box.id, "height", e.target.value)} placeholder="25" />
                     </div>
                     <div>
-                      <label>Cuántas cajas de este tamaño</label>
+                      <label>Cajas</label>
                       <input type="number" min="1" step="1" value={box.quantity} onChange={(e) => updateBox(box.id, "quantity", e.target.value)} placeholder="1" />
                     </div>
                     <div>

@@ -21,7 +21,6 @@ const additional = [
   ["Inspección de muestra", "Recibimos y validamos tu muestra antes de que realices una compra mayor.", "Desde $50"],
   ["Búsqueda de proveedores", "Comparamos fábricas según producto, volumen, calidad y condiciones de compra.", "Desde $300"],
   ["Auditoría de fábrica", "Nuestro personal visita la fábrica, inspecciona su operación y entrega un informe.", "Desde $500"],
-  ["Gestión de compra", "Si necesitas apoyo para pagar al proveedor, gestionamos la compra con tu factura.", "12% de la factura"],
   ["Etiquetado", "Apoyamos la identificación y el etiquetado de tu mercancía según tus requerimientos.", "Según requerimiento"],
 ] as [string, string, string][];
 
@@ -38,13 +37,13 @@ export default async function Home() {
 
   const additionalItems: [string, string, string][] = paymentAssistance
     ? [
-        ...additional.slice(0, 5),
+        ...additional.slice(0, 4),
         [
           paymentAssistance.name,
           paymentAssistance.description ?? "",
           `${paymentAssistance.price}% de la transacción`,
         ],
-        ...additional.slice(5),
+        ...additional.slice(4),
       ]
     : additional;
 

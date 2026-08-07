@@ -1,4 +1,5 @@
 import Calculator from "@/components/Calculator";
+import { createClient } from "@/lib/supabase/server";
 
 const whatsappLink = "https://wa.me/?text=Hola%20Amigo%20Cargo%2C%20quiero%20solicitar%20una%20cotizaci%C3%B3n%20para%20importar%20desde%20China.";
 
@@ -22,9 +23,31 @@ const additional = [
   ["Auditoría de fábrica", "Nuestro personal visita la fábrica, inspecciona su operación y entrega un informe.", "Desde $500"],
   ["Gestión de compra", "Si necesitas apoyo para pagar al proveedor, gestionamos la compra con tu factura.", "12% de la factura"],
   ["Etiquetado", "Apoyamos la identificación y el etiquetado de tu mercancía según tus requerimientos.", "Según requerimiento"],
-];
+] as [string, string, string][];
 
-export default function Home() {
+export default async function Home() {
+  // "Asistencia de pago" se gestiona 100% desde /admin (porcentaje editable
+  // por el cliente); si no existe o está inactiva, no se muestra la tarjeta.
+  const supabase = await createClient();
+  const { data: paymentAssistance } = await supabase
+    .from("tariffs")
+    .select("name,description,price,active")
+    .eq("service_key", "asistencia_pago")
+    .eq("active", true)
+    .maybeSingle();
+
+  const additionalItems: [string, string, string][] = paymentAssistance
+    ? [
+        ...additional.slice(0, 5),
+        [
+          paymentAssistance.name,
+          paymentAssistance.description ?? "",
+          `${paymentAssistance.price}% de la transacción`,
+        ],
+        ...additional.slice(5),
+      ]
+    : additional;
+
   return <main>
     <header className="site-header">
       <a className="brand" href="#inicio" aria-label="Amigo Cargo, inicio"><img src="/logo-amigo-cargo.svg" alt="Amigo Cargo" className="brand-logo" /></a>
@@ -67,7 +90,7 @@ export default function Home() {
     </section>
     <section className="section additional" id="nosotros">
       <div className="section-heading"><div><p className="eyebrow"><span /> Más respaldo</p><h2>Servicios para comprar con mayor seguridad.</h2></div><p>Cuando necesitas ir más allá del envío, nuestro equipo en China puede ayudarte a encontrar, comprobar y gestionar.</p></div>
-      <div className="additional-grid">{additional.map(([title,content,price])=><article key={title}><div className="card-top"><h3>{title}</h3><span>↗</span></div><p>{content}</p><small>{price}</small></article>)}</div>
+      <div className="additional-grid">{additionalItems.map(([title,content,price])=><article key={title}><div className="card-top"><h3>{title}</h3><span>↗</span></div><p>{content}</p><small>{price}</small></article>)}</div>
     </section>
     <section className="why-section"><div><p className="eyebrow light"><span /> Nuestra diferencia</p><h2>Más que mover mercancía, te ayudamos a importar mejor.</h2></div><ul><li><span>01</span>Acompañamiento antes, durante y después.</li><li><span>02</span>Apoyo para validar proveedores y productos.</li><li><span>03</span>Comunicación clara en cada etapa.</li><li><span>04</span>Pagos por Zelle, efectivo y Pago Móvil.</li></ul></section>
     <section className="final-cta" id="contacto"><p className="eyebrow"><span /> Empieza hoy</p><h2>¿Listo para importar desde China?</h2><p>Cuéntanos qué quieres traer y recibe orientación para dar el siguiente paso.</p><a className="button" href={whatsappLink} target="_blank" rel="noreferrer">Hablar con un asesor <span>↗</span></a><small>Respuesta personalizada · Sin compra mínima</small></section>

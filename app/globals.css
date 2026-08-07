@@ -101,6 +101,27 @@ footer .brand-logo.footer-logo{height:34px}
 .calc-total-row{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:10px;padding-top:18px;margin-top:6px;border-top:1px solid var(--line)}
 .calc-total-row>span{font-size:13px;font-weight:700;color:var(--ink)}
 
+/* Selector de modo: un bulto vs. varias cajas */
+.calc-mode-toggle{display:flex;gap:0;margin-bottom:28px;border:1px solid var(--line)}
+.calc-mode-toggle button{flex:1;padding:12px 14px;font-size:12px;font-weight:700;font-family:inherit;color:var(--muted);background:#fff;border:none;cursor:pointer;transition:.15s ease}
+.calc-mode-toggle button+button{border-left:1px solid var(--line)}
+.calc-mode-toggle button.active{background:var(--blue);color:#fff}
+
+/* Modo "varias cajas": lista de bultos con totales en vivo */
+.calc-boxes{min-width:0}
+.calc-box-row{border:1px solid var(--line);padding:18px;margin-bottom:14px}
+.calc-box-row-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.calc-box-remove{border:1px solid var(--line);background:#fff;color:var(--muted);width:24px;height:24px;line-height:1;font-size:14px;cursor:pointer}
+.calc-box-remove:hover{color:#b3261e;border-color:#b3261e}
+.calc-box-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.calc-box-grid div{display:flex;flex-direction:column;gap:8px;min-width:0}
+.calc-box-grid label{font-size:11px;color:var(--muted)}
+.calc-box-grid input{width:100%;max-width:100%;border:1px solid var(--line);padding:11px 8px;font-size:16px;font-family:inherit;color:var(--ink)}
+.calc-box-grid input:focus{outline:2px solid var(--blue);outline-offset:1px}
+.calc-add-box{width:100%;padding:13px;border:1px dashed var(--line);background:#fff;color:var(--blue);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:20px}
+.calc-add-box:hover{background:var(--soft)}
+.calc-boxes-total{display:flex;flex-wrap:wrap;gap:16px;padding:14px 16px;background:var(--soft);border:1px solid var(--line);font-size:12px;font-weight:700;color:var(--ink);margin-bottom:8px}
+
 @media(max-width:900px){
   .calculator-section{padding:82px 6vw}
   .calculator-grid{grid-template-columns:1fr;gap:44px}
@@ -110,6 +131,7 @@ footer .brand-logo.footer-logo{height:34px}
 @media(max-width:700px){
   .calc-card-body{padding:32px}
   .calc-primary-field input{font-size:20px;padding:16px 18px}
+  .calc-box-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media(max-width:560px){
   .calculator-section{padding:64px 6vw}
@@ -119,6 +141,8 @@ footer .brand-logo.footer-logo{height:34px}
   .calc-dims-grid input{padding:12px 8px;font-size:16px}
   .result-line{font-size:12.5px}
   .result-box .total{font-size:26px}
+  .calc-box-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .calc-mode-toggle button{font-size:11px;padding:11px 8px}
 }
 @media(max-width:400px){
   .calc-card-body{padding:18px}
@@ -126,4 +150,6 @@ footer .brand-logo.footer-logo{height:34px}
   .calc-dims-grid input{font-size:16px;padding:13px 14px}
   .calc-total-row{flex-direction:column;align-items:flex-start;gap:4px}
   .result-box .total{font-size:24px}
+  .calc-box-grid{grid-template-columns:1fr}
+  .calc-boxes-total{flex-direction:column;gap:6px}
 }

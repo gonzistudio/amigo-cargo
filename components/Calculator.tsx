@@ -181,7 +181,7 @@ export default function Calculator() {
               className={mode === "single" ? "active" : ""}
               onClick={() => setMode("single")}
             >
-              Un bulto
+              Un solo envío
             </button>
             <button
               type="button"
@@ -236,13 +236,13 @@ export default function Calculator() {
               {boxes.map((box, index) => (
                 <div className="calc-box-row" key={box.id}>
                   <div className="calc-box-row-header">
-                    <span>Caja {index + 1}</span>
+                    <span>Proveedor {index + 1}</span>
                     {boxes.length > 1 && (
                       <button
                         type="button"
                         className="calc-box-remove"
                         onClick={() => removeBox(box.id)}
-                        aria-label={`Quitar caja ${index + 1}`}
+                        aria-label={`Quitar proveedor ${index + 1}`}
                       >
                         ×
                       </button>
@@ -262,7 +262,7 @@ export default function Calculator() {
                       <input type="number" min="0" step="1" value={box.height} onChange={(e) => updateBox(box.id, "height", e.target.value)} placeholder="25" />
                     </div>
                     <div>
-                      <label>Cantidad</label>
+                      <label>Cuántas cajas de este tamaño</label>
                       <input type="number" min="1" step="1" value={box.quantity} onChange={(e) => updateBox(box.id, "quantity", e.target.value)} placeholder="1" />
                     </div>
                     <div>
@@ -273,7 +273,7 @@ export default function Calculator() {
                 </div>
               ))}
               <button type="button" className="calc-add-box" onClick={addBox}>
-                + Agregar caja
+                + Agregar proveedor
               </button>
               <div className="calc-boxes-total">
                 <span>{boxTotals.totalUnits} {boxTotals.totalUnits === 1 ? "caja" : "cajas"}</span>

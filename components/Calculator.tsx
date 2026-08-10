@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { estimateFreight, formatUSD, type FreightEstimate, type Tariff } from "@/lib/pricing";
+import { buildWhatsappLink } from "@/lib/whatsapp";
 
 const CAPITAL = "Distrito Capital";
 
@@ -50,6 +51,16 @@ function newBoxId() {
 
 function emptyBox(): BoxRow {
   return { id: newBoxId(), length: "", width: "", height: "", quantity: "1", weight: "" };
+}
+
+function isBoxComplete(box: BoxRow): boolean {
+  return (
+    (parseFloat(box.length) || 0) > 0 &&
+    (parseFloat(box.width) || 0) > 0 &&
+    (parseFloat(box.height) || 0) > 0 &&
+    (parseFloat(box.quantity) || 0) > 0 &&
+    (parseFloat(box.weight) || 0) > 0
+  );
 }
 
 function aggregateBoxes(rows: BoxRow[]) {
@@ -127,8 +138,13 @@ export default function Calculator() {
     const outsideCapital = region !== CAPITAL;
 
     if (mode === "multi") {
+      const allComplete = boxes.length > 0 && boxes.every(isBoxComplete);
+      if (!allComplete) {
+        setResult(null);
+        return;
+      }
       const { totalUnits, totalVolume, totalWeight } = boxTotals;
-      if (totalUnits <= 0 || (totalVolume <= 0 && totalWeight <= 0)) {
+      if (totalUnits <= 0) {
         setResult(null);
         return;
       }
@@ -137,18 +153,19 @@ export default function Calculator() {
     }
 
     const w = parseFloat(weight) || 0;
-    if (w <= 0) {
-      setResult(null);
-      return;
-    }
     const l = parseFloat(length) || 0;
     const wd = parseFloat(width) || 0;
     const h = parseFloat(height) || 0;
+    // Se requieren el peso y las tres medidas para mostrar un estimado: si solo
+    // hay peso (sin medidas), el precio puede confundir al cliente porque el
+    // envío se cobra por lo que resulte mayor entre peso real y volumen (CBM).
+    if (w <= 0 || l <= 0 || wd <= 0 || h <= 0) {
+      setResult(null);
+      return;
+    }
     const volumeM3 = (l * wd * h) / 1_000_000; // cm -> m3
     setResult(estimateFreight(w, volumeM3, tariff, { outsideCapital }));
-  }, [tariff, region, weight, length, width, height, mode, boxTotals]);
-
-  const whatsappBase = "https://wa.me/?text=";
+  }, [tariff, region, weight, length, width, height, mode, boxes, boxTotals]);
 
   return (
     <div className="calc-card">
@@ -210,7 +227,7 @@ export default function Calculator() {
               </div>
 
               <div className="calc-dims">
-                <p className="calc-dims-label">Medidas del bulto (opcional)</p>
+                <p className="calc-dims-label">Medidas del bulto</p>
                 <div className="calc-dims-grid">
                   <div>
                     <label htmlFor="length">Largo (cm)</label>
@@ -225,7 +242,7 @@ export default function Calculator() {
                     <input id="height" type="number" min="0" step="1" value={height} onChange={(e) => setHeight(e.target.value)} placeholder="25" />
                   </div>
                 </div>
-                <p className="calc-note">Mejoran la precisión del estimado. El precio se actualiza al instante.</p>
+                <p className="calc-note">Necesarias junto al peso para calcular tu estimado. El precio se actualiza al instante.</p>
               </div>
             </>
           )}
@@ -289,8 +306,8 @@ export default function Calculator() {
           {!result && (
             <p className="calc-note calc-live-hint">
               {mode === "multi"
-                ? "Agrega al menos una caja con sus medidas y peso para ver el estimado en tiempo real."
-                : "Ingresa el peso real para ver el estimado en tiempo real."}
+                ? "Completa el largo, ancho, alto, cantidad y peso de cada proveedor para ver el estimado en tiempo real."
+                : "Completa el peso real y las tres medidas (largo, ancho, alto) para ver el estimado en tiempo real."}
             </p>
           )}
 
@@ -334,11 +351,11 @@ export default function Calculator() {
                 style={{ marginTop: 18 }}
                 target="_blank"
                 rel="noreferrer"
-                href={`${whatsappBase}${encodeURIComponent(
+                href={buildWhatsappLink(
                   `Hola Amigo Cargo, hice una estimación en la web hacia ${region}: estimado ${formatUSD(
                     result.total
                   )}. Quiero confirmar mi cotización.`
-                )}`}
+                )}
               >
                 Confirmar cotización por WhatsApp <span>↗</span>
               </a>

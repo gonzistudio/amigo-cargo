@@ -64,6 +64,16 @@ export default async function Home() {
       <div className="hero-visual"><img src="/images/amigo-cargo-hero.png" alt="Contenedores preparados para transporte marítimo internacional" /><div className="route-card"><span className="route-dot" /><div><small>RUTA PRINCIPAL</small><strong>China <b>→</b> Venezuela</strong></div></div></div>
     </section>
     <section className="trust-strip" aria-label="Beneficios principales"><p>Tu carga acompañada de origen a destino.</p><div><span>✓</span> Casillero asignado</div><div><span>✓</span> Control en origen</div><div><span>✓</span> Atención personalizada</div></section>
+    <section className="partners-strip" aria-label="Nuestros aliados">
+      <p className="partners-title">Nuestros aliados</p>
+      <div className="partners-grid">
+        <img src="/partners/ups.png" alt="UPS" />
+        <img src="/partners/dhl.png" alt="DHL" />
+        <img src="/partners/zim.png" alt="ZIM" />
+        <img src="/partners/hapag-lloyd.png" alt="Hapag-Lloyd" />
+        <img src="/partners/cma-cgm.png" alt="CMA CGM" />
+      </div>
+    </section>
     <section className="section services" id="servicios">
       <div className="section-heading"><div><p className="eyebrow"><span /> Lo esencial</p><h2>Todo lo que necesitas para traer tu carga.</h2></div><p>Centralizamos las etapas clave de tu importación para darte más orden, control y comunicación.</p></div>
       <div className="service-grid">{services.map(([number,title,content])=><article className="service-card" key={title}><span>{number}</span><h3>{title}</h3><p>{content}</p><a href={whatsappLink} target="_blank" rel="noreferrer">Consultar <b>↗</b></a></article>)}</div>

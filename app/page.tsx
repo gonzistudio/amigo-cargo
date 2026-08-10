@@ -27,6 +27,33 @@ const additional = [
   ["Etiquetado", "Apoyamos la identificación y el etiquetado de tu mercancía según tus requerimientos.", "Según requerimiento"],
 ] as [string, string, string][];
 
+const faqs = [
+  [
+    "¿Cuánto tiempo tarda un envío de China a Venezuela?",
+    "El tiempo estimado ronda los 60 días. Puede variar según la temporada, la naviera y las condiciones operativas del momento.",
+  ],
+  [
+    "¿Hay un monto mínimo de compra para usar el servicio?",
+    "No. Puedes enviar desde un solo producto o caja; no exigimos un monto ni volumen mínimo de compra.",
+  ],
+  [
+    "¿El precio de la calculadora es el precio final?",
+    "Es una estimación referencial del flete marítimo. No incluye aranceles/aduana ni el envío interno dentro de China, y siempre se confirma contigo por WhatsApp antes de proceder.",
+  ],
+  [
+    "¿Qué pasa si compro en varios proveedores distintos?",
+    "Usa el modo \"Varias cajas / proveedores\" de la calculadora para sumar el volumen de todas tus compras. En bodega consolidamos todo en un solo envío, sin costo adicional.",
+  ],
+  [
+    "¿Qué métodos de pago aceptan?",
+    "Zelle, efectivo y Pago Móvil.",
+  ],
+  [
+    "¿Entregan fuera de Caracas?",
+    "Sí. Coordinamos la entrega en cualquier estado de Venezuela. Los envíos fuera de Distrito Capital tienen un recargo adicional, que la calculadora incluye automáticamente al elegir tu estado.",
+  ],
+] as [string, string][];
+
 export default async function Home() {
   // "Asistencia de pago" se gestiona 100% desde /admin (porcentaje editable
   // por el cliente); si no existe o está inactiva, no se muestra la tarjeta.
@@ -53,7 +80,7 @@ export default async function Home() {
   return <main>
     <header className="site-header">
       <a className="brand" href="#inicio" aria-label="Amigo Cargo, inicio"><img src="/logo-amigo-cargo.svg" alt="Amigo Cargo" className="brand-logo" /></a>
-      <nav aria-label="Navegación principal"><a href="#servicios">Servicios</a><a href="#calculadora">Calculadora</a><a href="#proceso">Cómo funciona</a><a href="#nosotros">Nosotros</a></nav>
+      <nav aria-label="Navegación principal"><a href="#servicios">Servicios</a><a href="#calculadora">Calculadora</a><a href="#proceso">Cómo funciona</a><a href="#nosotros">Nosotros</a><a href="#preguntas">Preguntas</a></nav>
       <a className="button button-small" href={quickQuoteLink} target="_blank" rel="noreferrer">Cotizar envío <span>↗</span></a>
     </header>
     <section className="hero" id="inicio">
@@ -86,8 +113,9 @@ export default async function Home() {
         <div className="calculator-intro">
           <p className="eyebrow"><span /> Herramienta</p>
           <h2>Calcula tu envío al instante.</h2>
-          <p>Ingresa el peso y, si las tienes, las medidas del bulto para estimar el costo de tu envío marítimo consolidado.</p>
+          <p>Ingresa el peso y las medidas del bulto para estimar el costo de tu envío marítimo consolidado.</p>
           <ul className="calculator-facts">
+            <li>Necesitas el peso y las tres medidas (largo, ancho, alto) para ver el estimado.</li>
             <li>Peso facturable: el mayor entre el peso real y el volumétrico.</li>
             <li>Incluye el mínimo de cobro y el cargo de manejo, si aplica.</li>
             <li>Estimación referencial, sujeta a confirmación por WhatsApp.</li>
@@ -105,6 +133,10 @@ export default async function Home() {
       <div className="additional-grid">{additionalItems.map(([title,content,price])=><article key={title}><div className="card-top"><h3>{title}</h3><span>↗</span></div><p>{content}</p><small>{price}</small></article>)}</div>
     </section>
     <section className="why-section"><div><p className="eyebrow light"><span /> Nuestra diferencia</p><h2>Más que mover mercancía, te ayudamos a importar mejor.</h2></div><ul><li><span>01</span>Acompañamiento antes, durante y después.</li><li><span>02</span>Apoyo para validar proveedores y productos.</li><li><span>03</span>Comunicación clara en cada etapa.</li><li><span>04</span>Pagos por Zelle, efectivo y Pago Móvil.</li></ul></section>
+    <section className="section faq" id="preguntas">
+      <div className="section-heading"><div><p className="eyebrow"><span /> Dudas comunes</p><h2>Preguntas frecuentes.</h2></div><p>Si no encuentras respuesta a tu duda aquí, escríbenos directamente por WhatsApp.</p></div>
+      <div className="faq-list">{faqs.map(([question,answer])=><details key={question}><summary>{question}</summary><p>{answer}</p></details>)}</div>
+    </section>
     <section className="final-cta" id="contacto"><p className="eyebrow"><span /> Empieza hoy</p><h2>¿Listo para importar desde China?</h2><p>Cuéntanos qué quieres traer y recibe orientación para dar el siguiente paso.</p><a className="button" href={advisorLink} target="_blank" rel="noreferrer">Hablar con un asesor <span>↗</span></a><small>Respuesta personalizada · Sin compra mínima</small></section>
     <footer><a className="brand" href="#inicio"><img src="/logo-amigo-cargo.svg" alt="Amigo Cargo" className="brand-logo footer-logo" /></a><p>Logística internacional de China a Venezuela.</p><a href="#inicio">Volver arriba ↑</a></footer>
   </main>;

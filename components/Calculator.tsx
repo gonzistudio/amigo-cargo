@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { estimateFreight, formatUSD, type FreightEstimate, type Tariff } from "@/lib/pricing";
+import { buildWhatsappLink } from "@/lib/whatsapp";
 
 const CAPITAL = "Distrito Capital";
 
@@ -147,8 +148,6 @@ export default function Calculator() {
     const volumeM3 = (l * wd * h) / 1_000_000; // cm -> m3
     setResult(estimateFreight(w, volumeM3, tariff, { outsideCapital }));
   }, [tariff, region, weight, length, width, height, mode, boxTotals]);
-
-  const whatsappBase = "https://wa.me/?text=";
 
   return (
     <div className="calc-card">
@@ -334,11 +333,11 @@ export default function Calculator() {
                 style={{ marginTop: 18 }}
                 target="_blank"
                 rel="noreferrer"
-                href={`${whatsappBase}${encodeURIComponent(
+                href={buildWhatsappLink(
                   `Hola Amigo Cargo, hice una estimación en la web hacia ${region}: estimado ${formatUSD(
                     result.total
                   )}. Quiero confirmar mi cotización.`
-                )}`}
+                )}
               >
                 Confirmar cotización por WhatsApp <span>↗</span>
               </a>

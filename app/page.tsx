@@ -1,7 +1,7 @@
 import Calculator from "@/components/Calculator";
 import { createClient } from "@/lib/supabase/server";
 import { buildWhatsappLink } from "@/lib/whatsapp";
-import { ArrowUpRightIcon, ArrowDownIcon, ArrowUpIcon, ArrowRightIcon, CheckIcon } from "@/components/icons";
+import { ArrowUpRightIcon, ArrowDownIcon, ArrowUpIcon, ArrowRightIcon, CheckIcon, ChinaFlagIcon, VenezuelaFlagIcon } from "@/components/icons";
 
 const quickQuoteLink = buildWhatsappLink("Hola, quiero cotizar un envío con Amigo Cargo.");
 const heroQuoteLink = buildWhatsappLink("Hola Amigo Cargo, quiero solicitar una cotización para importar desde China.");
@@ -47,7 +47,7 @@ const faqs = [
   ],
   [
     "¿Qué métodos de pago aceptan?",
-    "Zelle, efectivo y Pago Móvil.",
+    "Zelle, efectivo y transferencias.",
   ],
   [
     "¿Entregan fuera de Caracas?",
@@ -86,6 +86,11 @@ export default async function Home() {
     </header>
     <section className="hero" id="inicio">
       <div className="hero-copy">
+        <div className="hero-flags" aria-hidden="true">
+          <ChinaFlagIcon />
+          <span className="hero-flags-line" />
+          <VenezuelaFlagIcon />
+        </div>
         <p className="eyebrow"><span /> Logística China — Venezuela</p>
         <h1>Importa desde China con respaldo en cada paso.</h1>
         <p className="lead">Envíos marítimos, bodega en China y acompañamiento para que compres, verifiques y recibas tu mercancía con mayor tranquilidad.</p>
@@ -98,11 +103,8 @@ export default async function Home() {
     <section className="partners-strip" aria-label="Nuestros aliados">
       <p className="partners-title">Nuestros aliados</p>
       <div className="partners-grid">
-        <img src="/partners/ups.png" alt="UPS" />
-        <img src="/partners/dhl.png" alt="DHL" />
-        <img src="/partners/zim.png" alt="ZIM" />
-        <img src="/partners/hapag-lloyd.png" alt="Hapag-Lloyd" />
         <img src="/partners/cma-cgm.png" alt="CMA CGM" />
+        <img src="/partners/hapag-lloyd.png" alt="Hapag-Lloyd" />
       </div>
     </section>
     <section className="section services" id="servicios">
@@ -133,7 +135,7 @@ export default async function Home() {
       <div className="section-heading"><div><p className="eyebrow"><span /> Más respaldo</p><h2>Servicios para comprar con mayor seguridad.</h2></div><p>Cuando necesitas ir más allá del envío, nuestro equipo en China puede ayudarte a encontrar, comprobar y gestionar.</p></div>
       <div className="additional-grid">{additionalItems.map(([title,content,price])=><article key={title}><div className="card-top"><h3>{title}</h3><span><ArrowUpRightIcon /></span></div><p>{content}</p><small>{price}</small></article>)}</div>
     </section>
-    <section className="why-section"><div><p className="eyebrow light"><span /> Nuestra diferencia</p><h2>Más que mover mercancía, te ayudamos a importar mejor.</h2></div><ul><li><span>01</span>Acompañamiento antes, durante y después.</li><li><span>02</span>Apoyo para validar proveedores y productos.</li><li><span>03</span>Comunicación clara en cada etapa.</li><li><span>04</span>Pagos por Zelle, efectivo y Pago Móvil.</li></ul></section>
+    <section className="why-section"><div><p className="eyebrow light"><span /> Nuestra diferencia</p><h2>Más que mover mercancía, te ayudamos a importar mejor.</h2></div><ul><li><span>01</span>Acompañamiento antes, durante y después.</li><li><span>02</span>Apoyo para validar proveedores y productos.</li><li><span>03</span>Comunicación clara en cada etapa.</li><li><span>04</span>Pagos por Zelle, efectivo y transferencias.</li></ul></section>
     <section className="section faq" id="preguntas">
       <div className="section-heading"><div><p className="eyebrow"><span /> Dudas comunes</p><h2>Preguntas frecuentes.</h2></div><p>Si no encuentras respuesta a tu duda aquí, escríbenos directamente por WhatsApp.</p></div>
       <div className="faq-list">{faqs.map(([question,answer])=><details key={question}><summary>{question}</summary><p>{answer}</p></details>)}</div>

@@ -137,6 +137,10 @@ export default async function Home() {
     <section className="section additional" id="nosotros">
       <div className="section-heading"><div><p className="eyebrow"><span /> Más respaldo</p><h2>Servicios para comprar con mayor seguridad.</h2></div><p>Cuando necesitas ir más allá del envío, nuestro equipo en China puede ayudarte a encontrar, comprobar y gestionar.</p></div>
       <div className="additional-grid">{additionalItems.map(([title,content,price])=><article key={title}><div className="card-top"><h3>{title}</h3><span><ArrowUpRightIcon /></span></div><p>{content}</p><small>{price}</small></article>)}</div>
+      <div className="additional-cta">
+        <p>Cada servicio se cotiza según tu caso particular.</p>
+        <a className="button" href={buildWhatsappLink("Hola, quiero hablar con un asesor sobre los servicios adicionales de Amigo Cargo.")} target="_blank" rel="noreferrer">Hablar con un asesor <span><ArrowUpRightIcon /></span></a>
+      </div>
     </section>
     <section className="why-section"><div><p className="eyebrow light"><span /> Nuestra diferencia</p><h2>Más que mover mercancía, te ayudamos a importar mejor.</h2></div><ul><li><span>01</span>Acompañamiento antes, durante y después.</li><li><span>02</span>Apoyo para validar proveedores y productos.</li><li><span>03</span>Comunicación clara en cada etapa.</li><li><span>04</span>Pagos por Zelle, efectivo y transferencias.</li></ul></section>
     <section className="section faq" id="preguntas">

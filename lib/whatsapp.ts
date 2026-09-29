@@ -1,5 +1,5 @@
 // Número oficial de contacto de Amigo Cargo (formato E.164 sin "+", como lo requiere wa.me).
-export const WHATSAPP_PHONE = "584122881888";
+export const WHATSAPP_PHONE = "584222881888";
 
 /**
  * Genera un enlace de WhatsApp hacia el número de Amigo Cargo con un mensaje

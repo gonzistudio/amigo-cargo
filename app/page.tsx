@@ -103,8 +103,11 @@ export default async function Home() {
     <section className="partners-strip" aria-label="Nuestros aliados">
       <p className="partners-title">Nuestros aliados</p>
       <div className="partners-grid">
+        <img src="/partners/maersk.png" alt="Maersk" />
+        <img src="/partners/msc.png" alt="MSC" />
         <img src="/partners/cma-cgm.png" alt="CMA CGM" />
         <img src="/partners/hapag-lloyd.png" alt="Hapag-Lloyd" />
+        <img src="/partners/hamburg-sud.png" alt="Hamburg Süd" />
       </div>
     </section>
     <section className="section services" id="servicios">

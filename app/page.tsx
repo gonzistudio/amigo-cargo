@@ -21,10 +21,10 @@ const process = [
   ["Coordinamos la entrega", "Tu carga llega a Venezuela y organizamos contigo la entrega final."],
 ];
 const additional = [
-  ["Búsqueda de producto", "Localizamos el producto y preparamos una cotización estimada hasta tus manos.", "Desde $25"],
-  ["Inspección de muestra", "Recibimos y validamos tu muestra antes de que realices una compra mayor.", "Desde $50"],
-  ["Búsqueda de proveedores", "Comparamos fábricas según producto, volumen, calidad y condiciones de compra.", "Desde $300"],
-  ["Auditoría de fábrica", "Nuestro personal visita la fábrica, inspecciona su operación y entrega un informe.", "Desde $500"],
+  ["Búsqueda de producto", "Localizamos el producto y preparamos una cotización estimada hasta tus manos.", "A consultar"],
+  ["Inspección de muestra", "Recibimos y validamos tu muestra antes de que realices una compra mayor.", "A consultar"],
+  ["Búsqueda de proveedores", "Comparamos fábricas según producto, volumen, calidad y condiciones de compra.", "A consultar"],
+  ["Auditoría de fábrica", "Nuestro personal visita la fábrica, inspecciona su operación y entrega un informe.", "A consultar"],
   ["Etiquetado", "Apoyamos la identificación y el etiquetado de tu mercancía según tus requerimientos.", "Según requerimiento"],
 ] as [string, string, string][];
 
@@ -72,7 +72,7 @@ export default async function Home() {
         [
           paymentAssistance.name,
           paymentAssistance.description ?? "",
-          `${paymentAssistance.price}% de la transacción`,
+          "A consultar",
         ],
         ...additional.slice(4),
       ]

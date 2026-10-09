@@ -1,7 +1,7 @@
 import Calculator from "@/components/Calculator";
 import { createClient } from "@/lib/supabase/server";
 import { buildWhatsappLink } from "@/lib/whatsapp";
-import { ArrowUpRightIcon, ArrowDownIcon, ArrowUpIcon, ArrowRightIcon, CheckIcon, ChinaFlagIcon, VenezuelaFlagIcon } from "@/components/icons";
+import { ArrowUpRightIcon, ArrowDownIcon, ArrowUpIcon, ArrowRightIcon, CheckIcon, ChinaFlagIcon, VenezuelaFlagIcon, WhatsAppIcon } from "@/components/icons";
 
 const quickQuoteLink = buildWhatsappLink("Hola, quiero cotizar un envío con Amigo Cargo.");
 const heroQuoteLink = buildWhatsappLink("Hola Amigo Cargo, quiero solicitar una cotización para importar desde China.");
@@ -82,7 +82,7 @@ export default async function Home() {
     <header className="site-header">
       <a className="brand" href="#inicio" aria-label="Amigo Cargo, inicio"><img src="/logo-amigo-cargo.svg" alt="Amigo Cargo" className="brand-logo" /></a>
       <nav aria-label="Navegación principal"><a href="#servicios">Servicios</a><a href="#calculadora">Calculadora</a><a href="#proceso">Cómo funciona</a><a href="#nosotros">Nosotros</a><a href="#preguntas">Preguntas</a></nav>
-      <a className="button button-small" href={quickQuoteLink} target="_blank" rel="noreferrer">Cotizar envío <span><ArrowUpRightIcon /></span></a>
+      <a className="button button-small" href={quickQuoteLink} target="_blank" rel="noreferrer">Cotizar envío <span><WhatsAppIcon /></span></a>
     </header>
     <section className="hero" id="inicio">
       <div className="hero-copy">
@@ -94,7 +94,7 @@ export default async function Home() {
         <p className="eyebrow"><span /> Logística China — Venezuela</p>
         <h1>Importa desde China con respaldo en cada paso.</h1>
         <p className="lead">Envíos marítimos, bodega en China y acompañamiento para que compres, verifiques y recibas tu mercancía con mayor tranquilidad.</p>
-        <div className="hero-actions"><a className="button" href={heroQuoteLink} target="_blank" rel="noreferrer">Solicitar cotización <span><ArrowUpRightIcon /></span></a><a className="text-link" href="#proceso">Conoce el proceso <span><ArrowDownIcon /></span></a></div>
+        <div className="hero-actions"><a className="button" href={heroQuoteLink} target="_blank" rel="noreferrer">Solicitar cotización <span><WhatsAppIcon /></span></a><a className="text-link" href="#proceso">Conoce el proceso <span><ArrowDownIcon /></span></a></div>
         <div className="hero-proof"><div><strong>~60 días</strong><span>Tiempo estimado*</span></div><div><strong>0 mínimos</strong><span>Compra sin monto mínimo</span></div><div><strong>Gratis</strong><span>Consolidación de carga</span></div></div>
       </div>
       <div className="hero-visual"><img src="/images/amigo-cargo-hero.png" alt="Contenedores preparados para transporte marítimo internacional" /><div className="route-card"><span className="route-dot" /><div><small>RUTA PRINCIPAL</small><strong>China <b><ArrowRightIcon /></b> Venezuela</strong></div></div></div>
@@ -112,7 +112,7 @@ export default async function Home() {
     </section>
     <section className="section services" id="servicios">
       <div className="section-heading"><div><p className="eyebrow"><span /> Lo esencial</p><h2>Todo lo que necesitas para traer tu carga.</h2></div><p>Centralizamos las etapas clave de tu importación para darte más orden, control y comunicación.</p></div>
-      <div className="service-grid">{services.map(([number,title,content])=><article className="service-card" key={title}><span>{number}</span><h3>{title}</h3><p>{content}</p><a href={buildWhatsappLink(`Hola, quiero más información sobre el servicio de ${title}.`)} target="_blank" rel="noreferrer">Consultar <b><ArrowUpRightIcon /></b></a></article>)}</div>
+      <div className="service-grid">{services.map(([number,title,content])=><article className="service-card" key={title}><span>{number}</span><h3>{title}</h3><p>{content}</p><a href={buildWhatsappLink(`Hola, quiero más información sobre el servicio de ${title}.`)} target="_blank" rel="noreferrer">Consultar <b><WhatsAppIcon /></b></a></article>)}</div>
     </section>
     <section className="calculator-section" id="calculadora">
       <div className="calculator-grid">
@@ -139,7 +139,7 @@ export default async function Home() {
       <div className="additional-grid">{additionalItems.map(([title,content,price])=><article key={title}><div className="card-top"><h3>{title}</h3><span><ArrowUpRightIcon /></span></div><p>{content}</p><small>{price}</small></article>)}</div>
       <div className="additional-cta">
         <p>Cada servicio se cotiza según tu caso particular.</p>
-        <a className="button" href={buildWhatsappLink("Hola, quiero hablar con un asesor sobre los servicios adicionales de Amigo Cargo.")} target="_blank" rel="noreferrer">Hablar con un asesor <span><ArrowUpRightIcon /></span></a>
+        <a className="button" href={buildWhatsappLink("Hola, quiero hablar con un asesor sobre los servicios adicionales de Amigo Cargo.")} target="_blank" rel="noreferrer">Hablar con un asesor <span><WhatsAppIcon /></span></a>
       </div>
     </section>
     <section className="why-section"><div><p className="eyebrow light"><span /> Nuestra diferencia</p><h2>Más que mover mercancía, te ayudamos a importar mejor.</h2></div><ul><li><span>01</span>Acompañamiento antes, durante y después.</li><li><span>02</span>Apoyo para validar proveedores y productos.</li><li><span>03</span>Comunicación clara en cada etapa.</li><li><span>04</span>Pagos por Zelle, efectivo y transferencias.</li></ul></section>
@@ -147,7 +147,7 @@ export default async function Home() {
       <div className="section-heading"><div><p className="eyebrow"><span /> Dudas comunes</p><h2>Preguntas frecuentes.</h2></div><p>Si no encuentras respuesta a tu duda aquí, escríbenos directamente por WhatsApp.</p></div>
       <div className="faq-list">{faqs.map(([question,answer])=><details key={question}><summary>{question}</summary><p>{answer}</p></details>)}</div>
     </section>
-    <section className="final-cta" id="contacto"><p className="eyebrow"><span /> Empieza hoy</p><h2>¿Listo para importar desde China?</h2><p>Cuéntanos qué quieres traer y recibe orientación para dar el siguiente paso.</p><a className="button" href={advisorLink} target="_blank" rel="noreferrer">Hablar con un asesor <span><ArrowUpRightIcon /></span></a><small>Respuesta personalizada · Sin compra mínima</small></section>
-    <footer><a className="brand" href="#inicio"><img src="/logo-amigo-cargo.svg" alt="Amigo Cargo" className="brand-logo footer-logo" /></a><p>Logística internacional de China a Venezuela.</p><a href="#inicio">Volver arriba <span><ArrowUpIcon /></span></a></footer>
+    <section className="final-cta" id="contacto"><p className="eyebrow"><span /> Empieza hoy</p><h2>¿Listo para importar desde China?</h2><p>Cuéntanos qué quieres traer y recibe orientación para dar el siguiente paso.</p><a className="button" href={advisorLink} target="_blank" rel="noreferrer">Hablar con un asesor <span><WhatsAppIcon /></span></a><small>Respuesta personalizada · Sin compra mínima</small></section>
+    <footer><a className="brand" href="#inicio"><img src="/logo-amigo-cargo.svg" alt="Amigo Cargo" className="brand-logo footer-logo" /></a><div className="footer-info"><p>Logística internacional de China a Venezuela.</p><p className="footer-copyright">© {new Date().getFullYear()} Amigo Cargo. Todos los derechos reservados.</p></div><a href="#inicio">Volver arriba <span><ArrowUpIcon /></span></a></footer>
   </main>;
 }

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { estimateFreight, formatUSD, type FreightEstimate, type Tariff } from "@/lib/pricing";
 import { buildWhatsappLink } from "@/lib/whatsapp";
-import { ArrowUpRightIcon } from "@/components/icons";
+import { WhatsAppIcon } from "@/components/icons";
 
 const CAPITAL = "Distrito Capital";
 
@@ -358,7 +358,7 @@ export default function Calculator() {
                   )}. Quiero confirmar mi cotización.`
                 )}
               >
-                Confirmar cotización por WhatsApp <span><ArrowUpRightIcon /></span>
+                Confirmar cotización por WhatsApp <span><WhatsAppIcon /></span>
               </a>
             </div>
           )}

@@ -1,6 +1,7 @@
 import Calculator from "@/components/Calculator";
 import { createClient } from "@/lib/supabase/server";
 import { buildWhatsappLink } from "@/lib/whatsapp";
+import { formatUSD } from "@/lib/pricing";
 import { ArrowUpRightIcon, ArrowDownIcon, ArrowUpIcon, ArrowRightIcon, CheckIcon, ChinaFlagIcon, VenezuelaFlagIcon, WhatsAppIcon } from "@/components/icons";
 
 const quickQuoteLink = buildWhatsappLink("Hola, quiero cotizar un envío con Amigo Cargo.");
@@ -66,6 +67,16 @@ export default async function Home() {
     .eq("active", true)
     .maybeSingle();
 
+  // "Envío aéreo" es solo una anotación informativa junto a la calculadora:
+  // el precio lo edita el cliente desde /admin y no alimenta ningún cálculo.
+  // Si está inactiva o no tiene precio, simplemente no se muestra.
+  const { data: airFreight } = await supabase
+    .from("tariffs")
+    .select("price,active")
+    .eq("service_key", "envio_aereo")
+    .eq("active", true)
+    .maybeSingle();
+
   const additionalItems: [string, string, string][] = paymentAssistance
     ? [
         ...additional.slice(0, 4),
@@ -126,6 +137,11 @@ export default async function Home() {
             <li>Incluye el mínimo de cobro y el cargo de manejo, si aplica.</li>
             <li>Estimación referencial, sujeta a confirmación por WhatsApp.</li>
           </ul>
+          {airFreight && (
+            <p className="calc-air-note">
+              <strong>Envío aéreo:</strong> desde {formatUSD(airFreight.price)}/kg. Precio referencial, sujeto a confirmación por WhatsApp.
+            </p>
+          )}
         </div>
         <Calculator />
       </div>

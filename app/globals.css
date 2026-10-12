@@ -82,7 +82,7 @@ footer .brand-logo.footer-logo{height:34px}
 .calculator-intro>p{color:var(--muted);line-height:1.7;margin:0 0 30px;max-width:400px}
 .calculator-facts{list-style:none;margin:0;padding-top:26px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:16px}
 .calculator-facts li{font-size:13px;line-height:1.5;color:var(--muted);padding-left:20px;position:relative}
-.calculator-facts li:before{content:"";position:absolute;left:0;top:6px;width:7px;height:7px;background:var(--blue)}
+.calculator-facts li:before{content:"";position:absolute;left:0;top:6px;width:7px;height:7px;background:var(--blue)}.calc-air-note{margin:22px 0 0;padding:16px 18px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--blue);font-size:13px;line-height:1.55;color:var(--muted)}.calc-air-note strong{color:var(--ink)}
 
 .calc-card{background:#fff;border:1px solid var(--line);min-width:0}
 .calc-card-body{padding:48px;min-width:0}
